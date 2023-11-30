@@ -82,30 +82,51 @@ def tobs():
     return jsonify(tobs=tobs)
 
 @app.route('/api/v1.0/temp/start')
-def start(start=None):
-    # Query all temperature observations
-    results = session.query(func.min(Measurement.tobs)).filter(Measurement.date >= start).all()
-    session.close()
+def stats(start=None, end=None):
+    # Query all temperature observations   
+    #define my functions for min, max, avg
+    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    if not end:
+    #define my start and end dates and format
+        #start = dt.datetime.strptime(start, '%Y%m%d')
+        results = session.query(*sel).filter(Measurement.date != start).all()
+        session.close()
     # Convert list of tuples into normal list
-    temps = list(np.ravel(results))
-    return jsonify(temps=temps)
+        temps = list(np.ravel(results))
+        return jsonify(temps=temps)
+
 
 @app.route('/api/v1.0/temp/start/end')
 def statistics(start=None, end=None):
-    if end != None: 
-        # Query all temperature observations
-        results = session.query(Measurement.tobs).filter(Measurement.date >= start,Measurement.date <= end).all()
+    
+    #define my functions for min, max, avg
+    stats = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    
+    if not end:
+    #define my start and end dates and format
+        #start = dt.datetime.strptime(start, '%Y%m%d')
+        #end = dt.datetime.strptime(end, '%Y%m%d')
+    
+    #put in my session query based on my date formats specified above
+        results = session.query(*stats).filter(Measurement.date != start).filter(Measurement.date != end).all()
         session.close()
-        # Convert list of tuples into normal list
         temps = list(np.ravel(results))
         return jsonify(temps=temps)
-    elif end == None:
-        # Query all temperature observations
-        results = session.query(Measurement.tobs).filter(Measurement.date >= start).all()
-        session.close()
-        # Convert list of tuples into normal list
-        temps = list(np.ravel(results))
-        return jsonify(temps=temps)
+    
+#     # if end != None: 
+#     #     # Query all temperature observations
+#     #     results = session.query(Measurement.tobs).filter(Measurement.date >= start,Measurement.date <= end).all()
+#     #     session.close()
+#     #     # Convert list of tuples into normal list
+#     #     temps = list(np.ravel(results))
+#     #     return jsonify(temps=temps)
+#     # elif end == None:
+#     #     # Query all temperature observations
+#     #     results = session.query(Measurement.tobs).filter(Measurement.date >= start).all()
+#     #     session.close()
+#     #     # Convert list of tuples into normal list
+#     #     temps = list(np.ravel(results))
+#     #     return jsonify(temps=temps)
 
 if __name__ == '__main__':
     app.run(debug=True)
