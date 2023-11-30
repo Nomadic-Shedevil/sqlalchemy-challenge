@@ -1,4 +1,9 @@
 # sqlalchemy-challenge
+see file "climate_starter-Jessica Analysis.ipynb" for jupyter notebook portion of this assignment 
+
+file app.py contains flask portion of the assignment
+
+file "Output_Data" contains saved figures from Jessica Analysis for review
 
 resources:
 Replace NaN Values with Zeros in Pandas DataFrame. 2021, July 24. Data to Fish. https://datatofish.com/replace-nan-values-with-zeros/
